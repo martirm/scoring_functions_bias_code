@@ -12,14 +12,20 @@ scale_colour_Publication <- function(...){
     
 }
 
-plot_multi_level_score <- function(score, data){
+plot_multi_level_score <- function(score, data, invert_y=FALSE){
+    #invert_y: if TRUE, invert Y axis, but only on scores where lower is better.
+    score_str <- score
     score <- ensym(score)
     ggplot(data, aes(x = lambda, y = !!score, color=level)) +
         geom_point() + 
         stat_smooth(se = FALSE, size = 1) +
         xlab(expression(lambda)) +
         theme_classic2() + grids(linetype = "dashed") +
-        scale_colour_Publication()
+        scale_colour_Publication() +
+        {
+            if (invert_y & score_str %in% reverse_y_scores)
+                scale_y_reverse()
+        }
 
 }
 
@@ -56,7 +62,8 @@ grid_arrange_shared_legend <- function(..., ncol = length(list(...)), nrow = 1,
 
 
 selected_scores <- c("modularity", "coverage", "density ratio", "conductance", "TPR", "norm cut", "expansion", "internal density")
-plot_list <- lapply(selected_scores, plot_multi_level_score, data=multi_level_scores)
+reverse_y_scores <- c("conductance", "norm cut", "expansion")
+plot_list <- lapply(selected_scores, plot_multi_level_score, data=multi_level_scores, invert_y=TRUE)
 #plot_list <- lapply(selected_scores, plot_multi_level_score, data=multi_level_scores_BA)
 do.call(grid_arrange_shared_legend, c(plot_list, list("ncol"=2, "nrow"=4)))
 
