@@ -1,7 +1,8 @@
-library(igraph)
-#library(rewire)
-library(pbapply)
 library(clustAnalytics)
+library(pbapply)
+
+# This script contains the code to perform the experiments of the single-level
+# SBM networks. 
 
 
 ground_truth_sbm <- function(blocks=c(40,25,25,10)){
@@ -87,13 +88,9 @@ block_sizes_list <- rep(block_sizes_list, times=100) #we generate some duplicate
 set.seed(1)
 power_law_block_sizes <- power_law_blocks_varying_size()
 scores_table_local <- merge_scores(power_law_block_sizes, type="local")
-#scores_table_local <- merge_scores(uniform_dist_blocks, type="local")
-#scores_table_local <- merge_scores(block_sizes_list, type="local")
 
 
 scores_table_global <- merge_scores(power_law_block_sizes, type="global")
-#scores_table_global <- merge_scores(uniform_dist_blocks, type="global")
-#scores_table_global <- merge_scores(block_sizes_list, type="global")
 save(scores_table_local, scores_table_global, file="scores_table.RData")
 
 
